@@ -22,3 +22,6 @@ __pycache__/
 *.nav
 *.run.xml
 *.snm
+
+# Idea
+.idea/*
