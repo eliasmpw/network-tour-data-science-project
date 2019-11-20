@@ -36,3 +36,51 @@ def get_intersections_length_adj_mat(col):
     stop = timeit.default_timer()
     print("Time: ", stop - start)
     return adj
+
+def get_unions_length_adj_mat(col):
+    "Get the unions length of the set of each entry with the set of every other entry in the column"
+    start = timeit.default_timer()
+    adj = np.zeros((col.shape[0], col.shape[0]))
+    for (i, set_row) in enumerate(col):
+        for (j, set_col) in enumerate(col):
+            try:
+                adj[i, j] = len(set_row.union(set_col))
+            except AttributeError:
+                adj[i, j] = 0
+    stop = timeit.default_timer()
+    print("Time: ", stop - start)
+    return adj
+
+def get_json_keys_from_col(col):
+    "Get keys from all json strings within a column"
+    fields = set()
+    col = col.apply(json.loads)
+    col = col.dropna()
+    not_dict_idx = []
+    if len(col[0]) > 1:
+        col = col.explode()
+    for (i, row) in enumerate(col):
+        try:
+            fields = fields.union(set(row.keys()))
+        except AttributeError:
+            not_dict_idx.append(i)
+    return list(fields), not_dict_idx
+
+def get_json_values_from_col(col, field):
+    "Get values from all json strings within a column"
+    field_values = set()
+    col = col.apply(json.loads)
+    col = col.dropna()
+    not_val_idx = []
+    if len(col[0]) > 1:
+        col = col.explode()
+    for (i, row) in enumerate(col):
+        try:
+            field_values.add(row[field])
+        except (AttributeError, TypeError):
+            not_val_idx.append(i)
+    return list(field_values), not_val_idx
+
+def sparsify_mat(mat,epsilon):
+    "Set the values below a threshold to 0"
+    return np.where(mat<=epsilon,0,mat)
