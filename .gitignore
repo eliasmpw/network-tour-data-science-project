@@ -30,3 +30,4 @@ projects/project_ntds_2019/cast_adj.npy
 projects/project_ntds_2019/clean_cast_adj.npy
 projects/project_ntds_2019/movie_adj.npy
 *.npy
+*.pkl
