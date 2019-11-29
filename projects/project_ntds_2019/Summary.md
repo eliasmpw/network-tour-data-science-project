@@ -6,9 +6,9 @@
 
 The idea of the project is to find if there exist a community of actors, how they relate among them and who are the most popular actors. 
 
-For this purpose the dataset of IMD will be used, this dataset is downloaded from kaggle :... PUT LINK HERE
+For this purpose the dataset of IMDB will be used, this dataset is downloaded from kaggle :... PUT LINK HERE
 
-The tools that we are going to use for this project are: Pandas, Scikit-learn, Networkx, Matplotlib , etc.
+The tools that we are going to use for this project are: Pandas, Scikit-learn, Networkx, Matplotlib, and others.
 
 ### 2. Acquisition 
 
