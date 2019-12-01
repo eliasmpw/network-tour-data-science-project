@@ -8,17 +8,71 @@ The idea of the project is to find if there exist a community of actors, how
 they relate among them and who are the most popular actors.
 
 For this purpose the dataset of IMDB will be used, this dataset is downloaded
-from kaggle :... PUT LINK HERE
+from kaggle : https://www.kaggle.com/tmdb/tmdb-movie-metadata.
 
 The tools that we are going to use for this project are: Pandas, Scikit-learn,
 Networkx, Matplotlib, and others.
 
 ### 2. Acquisition
 
-The data consisted of : ... description of the data
+We used the TMDB 5000 Movie dataset provided by Kaggle.
 
-For the creation of the graph we did this ...
+- #### Description of the data
+  The dataset consisted of two tables containing features from movies. The first table provided the following information:
+    - movie id: movie unique identifier.
+    - title
+    - cast: a column of json strings containing actor names, order (importance, the value is 0 for the main actor), gender, id and character. 
+    - crew: a column of json strings with the name, department, id , gender and job of the crew members.
+  The second table contained the following columns:
+    - budget
+    - genres
+    - homepage 
+    - movie_id 
+    - keywords
+    - original_language
+    - original_title
+    - overview
+    - popularity
+    - production_companies
+    - production_countries
+    - release_date
+    - revenue
+    - runtime
+    - spoken_languages
+    - status
+    - tagline
+    - title
+    - vote_average
+    - vote_count
 
+- #### Creation of the graph
+As we wanted to create a graph of actors we had to process the table in the follwing way:
+  - We extracted the actors from the cast column of the first table transforming it into a table of actors. Since there were around 54000 (be more precise) entries in total we took into account only the protagonist (actors with order 0) reducing the table to 2000 entries (be more precise).
+  - We joined the actors table with the second table and, for each actor, we aggregated the features of the movies as follows:
+    - movie_id: set of movie ids
+    - cast: union of casts
+    - crew: union of crews
+    - actor_id: max actor id (since the value is the same across movies the max operator does not have any effect)
+    - gender: max gender (same argument as for actor_id)
+    - budget: mean of budgets across movies
+    - genres: union of genres
+    - keywords: union of keywords
+    - original_language : set of original languages
+    - popularity: mean popularity across movies
+    - production_companies: union
+    - production_countries: union
+    - release_date: list
+    - revenue: mean of revenues across movies
+    - runtime: sum 
+    - spoken_languages: union
+    - status: list
+    - title: set
+    - vote_average: mean 
+    - vote_count: mean (Should be sum?)
+  - We defined the "affinity" (weights) between two actors by the following formula:
+  \begin{equation} w_{ij} = \frac{0.3|movie\_id_i \cap movie\_id_j|+0.3|cast_i \cap cast_j|+0.2|crew_i \cap crew_j|+0.1|genre_i \cap genre_j}{0.3|movie\_id_i \cup movie\_id_j|+0.3|cast_i \cup cast_j|+0.2|crew_i \cup crew_j|+0.1|genre_i \cup genre_j}
+  \end{equation}
+  This means that actors that share most of their cast,movies, genres and production companies are strongly related.
 ### 3. Exploration
 
 The first exploration that we did show the following:
