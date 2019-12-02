@@ -4,14 +4,14 @@
 
 ### 1. Story
 
-The idea of the project is to find if there exist a community of actors, how
-they relate among them and who are the most popular actors.
+The idea of the project is to find communities of actors, explain how
+they are related within their communities and find the most representative actors.
 
-For this purpose the dataset of IMDB will be used, this dataset is downloaded
-from kaggle : https://www.kaggle.com/tmdb/tmdb-movie-metadata.
+We want to understand the relationships between actors because there might be implicit groups of actors that perform on similar movies, interact with the same people, work for the same productions companies, etc. Within these communities we want to find the most representative actors and what genre of movies they have taken part on most frequently. So with this information, a new actor can know which type of movies he should perform on in order to eventually become part of this community.
 
-The tools that we are going to use for this project are: Pandas, Scikit-learn,
-Networkx, Matplotlib, and others.
+The IMDb dataset is relevant for this work because it provides reliable information about the movies each actor has performed on, the people he/she has interacted with, the production companies he/she has worked for, etc. We can use this information to infer affinity between actors by looking at how many of these elements they have in common. The dataset can be downloaded from kaggle : https://www.kaggle.com/tmdb/tmdb-movie-metadata.
+
+We are building a graph from the data and analyzing it with the following specialized tools: Pandas, Scikit-learn, Networkx, Matplotlib, Python louvain. 
 
 ### 2. Acquisition
 
@@ -137,3 +137,8 @@ The first exploration that we did show the following:
 
 - Clustering: Spectral clustering findings
 - Critical evaluation of the results
+
+### 5. Next steps
+  - Analyze the communities and try to find the relationships that explain them.
+  - Find most representative actors of each community.
+  - Create appropriate visualizations.
