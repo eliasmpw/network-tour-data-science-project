@@ -46,8 +46,9 @@ We used the TMDB 5000 Movie dataset provided by Kaggle.
     - vote_count
 
 - #### Creation of the graph
-As we wanted to create a graph of actors we had to process the table in the follwing way:
+As we wanted to create a graph of actors we had to process the table in the following way:
   - We extracted the actors from the cast column of the first table transforming it into a table of actors. Since there were around 54000 (be more precise) entries in total we took into account only the protagonist (actors with order 0) reducing the table to 2000 entries (be more precise).
+  
   - We joined the actors table with the second table and, for each actor, we aggregated the features of the movies as follows:
     - movie_id: set of movie ids
     - cast: union of casts
@@ -69,10 +70,13 @@ As we wanted to create a graph of actors we had to process the table in the foll
     - title: set
     - vote_average: mean 
     - vote_count: mean (Should be sum?)
+    
   - We defined the "affinity" (weights) between two actors by the following formula:
-  \begin{equation} w_{ij} = \frac{0.3|movie\_id_i \cap movie\_id_j|+0.3|cast_i \cap cast_j|+0.2|crew_i \cap crew_j|+0.1|genre_i \cap genre_j}{0.3|movie\_id_i \cup movie\_id_j|+0.3|cast_i \cup cast_j|+0.2|crew_i \cup crew_j|+0.1|genre_i \cup genre_j}
-  \end{equation}
-  This means that actors that share most of their cast,movies, genres and production companies are strongly related.
+  
+    $\begin{equation} w_{ij} = \frac{0.3|movie\_id_i \cap movie\_id_j|+0.3|cast_i \cap cast_j|+0.2|crew_i \cap crew_j|+0.1|genre_i \cap genre_j}{0.3|movie\_id_i \cup movie\_id_j|+0.3|cast_i \cup cast_j|+0.2|crew_i \cup crew_j|+0.1|genre_i \cup genre_j}
+    \end{equation}$
+  
+  - This means that actors that share most of their cast,movies, genres and production companies are strongly related.
 ### 3. Exploration
 
 The first exploration that we did show the following:
@@ -81,14 +85,14 @@ The first exploration that we did show the following:
   Number of connected components 2, however we decided to sparsifiy more the
   matrix so that is manageable and feasible to use, obtained one connected
   component
-- #### Sparisty of the graph:
-  INSERT PLOT HERE
+- #### Sparsity of the graph:
+  ![sparsity_adjj](D:\EPFL\Network_Tour_Data_Science\EE-558-ntds\projects\project_ntds_2019\plots\sparsity_adjj.png)
 - #### Diameter:
   4, meaning that any actor is 4 steps away of knowing any other actor.
 - #### Degree distribution:
-  INSERT PLOT HERE
+  ![degree_distribution](D:\EPFL\Network_Tour_Data_Science\EE-558-ntds\projects\project_ntds_2019\plots\degree_distribution.png)
 - #### Spectrum:
-  INSERT PLOT HERE
+  ![spectrum](D:\EPFL\Network_Tour_Data_Science\EE-558-ntds\projects\project_ntds_2019\plots\spectrum.png)
 - #### Type of graph:
   The network is a small world, to get this assumption a similar generated
   Erdős–Rényi network was created and network statistics like clustering
@@ -130,15 +134,19 @@ The first exploration that we did show the following:
     - Zooey Deschanel
 
 * #### Analysis of the attributes:
-* #### A visualization of the network: I did a simple plot, for this, if elias can improve insert the improved picture here
-* #### A reflection on the insights
 
-### 4. Exploitation
+* #### A visualization of the network: 
 
-- Clustering: Spectral clustering findings
-- Critical evaluation of the results
+![graph](D:\EPFL\Network_Tour_Data_Science\EE-558-ntds\projects\project_ntds_2019\plots\graph.png)
+
+### 4. Exploitation 
+
+![louvain](D:\EPFL\Network_Tour_Data_Science\EE-558-ntds\projects\project_ntds_2019\plots\louvain.png)
+
+- We used Louvain's algorithm to find the communities of the graph, this algorithm is a bottom up approach to find communities based on the modularity of the nodes. The idea is to use these values a ground-truth so that later we can train a Machine Learning model (Logistic Regression) so that we try to recreate these results based on the features of the actors 
 
 ### 5. Next steps
   - Analyze the communities and try to find the relationships that explain them.
   - Find most representative actors of each community.
   - Create appropriate visualizations.
+  - Logistic Regression on the labeled data (louvain graph) to try to find the features that are the most relevant in the community formation and have a Machine Learning model able to predict to which community an actor would belong. 
