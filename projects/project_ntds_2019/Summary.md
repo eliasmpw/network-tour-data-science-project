@@ -1,4 +1,4 @@
-# Neighborhood of Actors, Who is the MVP among them?
+# Actors tour of data science "From popularity to rating"
 
 ### Team 8 - Network Tour of Data Science
 
@@ -73,8 +73,10 @@ As we wanted to create a graph of actors we had to process the table in the foll
     
   - We defined the "affinity" (weights) between two actors by the following formula:
   
-    $\begin{equation} w_{ij} = \frac{0.3|movie\_id_i \cap movie\_id_j|+0.3|cast_i \cap cast_j|+0.2|crew_i \cap crew_j|+0.1|genre_i \cap genre_j}{0.3|movie\_id_i \cup movie\_id_j|+0.3|cast_i \cup cast_j|+0.2|crew_i \cup crew_j|+0.1|genre_i \cup genre_j}
+    $\begin{equation} w_{ij} = \frac{0.3|movie\_id_i \cap movie\_id_j|+0.3|cast_i \cap cast_j|+0.2|crew_i \cap crew_j|+0.1|genre_i \cap genre_j+0.1|prod\_companies_i\cap prod\_companies_j}{0.3|movie\_id_i \cup movie\_id_j|+0.3|cast_i \cup cast_j|+0.2|crew_i \cup crew_j|+0.1|genre_i \cup genre_j+0.1|prod\_companies_i\cap prod\_companies_j}
     \end{equation}$
+  
+  - In the previous formula $movie\_id, \ cast, \ crew, \ genre \ and \  prod\_companies$ , are sets created from the IMDB database.
   
   - This means that actors that share most of their cast,movies, genres and production companies are strongly related.
 ### 3. Exploration
@@ -143,10 +145,10 @@ The first exploration that we did show the following:
 
 ![louvain](D:\EPFL\Network_Tour_Data_Science\EE-558-ntds\projects\project_ntds_2019\plots\louvain.png)
 
-- We used Louvain's algorithm to find the communities of the graph, this algorithm is a bottom up approach to find communities based on the modularity of the nodes. The idea is to use these values a ground-truth so that later we can train a Machine Learning model (Logistic Regression) so that we try to recreate these results based on the features of the actors 
+- We used Louvain's algorithm to find the communities of the graph, this algorithm is a bottom up approach to find communities based on the modularity of the nodes. The idea is to use these values as a feature so that later we can train a Machine Learning model to do a regression so that we can estimate the signal values of each actor (revenue, popularity, etc.)
 
 ### 5. Next steps
   - Analyze the communities and try to find the relationships that explain them.
   - Find most representative actors of each community.
   - Create appropriate visualizations.
-  - Logistic Regression on the labeled data (louvain graph) to try to find the features that are the most relevant in the community formation and have a Machine Learning model able to predict to which community an actor would belong. 
+  - Machine Learning model to do a regression with the communities labels (louvain graph)  as a feature so that we can estimate the signal values of the actors(revenue, popularity, etc.).
