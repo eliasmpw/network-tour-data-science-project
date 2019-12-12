@@ -84,3 +84,21 @@ def get_json_values_from_col(col, field):
 def sparsify_mat(mat,epsilon):
     "Set the values below a threshold to 0"
     return np.where(mat<=epsilon,0,mat)
+
+def log10_transform(epsilon):
+    "Return a lambda function to perform a log transform"
+    return lambda x: np.log10(x+epsilon)
+
+def plot_hist(col,title,xlabel,ylabel,log = False, figsize = (10,5), xticks_step = 1.0 , bins = 200, epsilon = 1e-6):
+    "Plot a histogram of the column values"
+    if log:
+        col = col.apply(log10_transform(epsilon)) 
+    fig, ax = plt.subplots()
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_xticks(np.arange(min(col), max(col)+xticks_step,xticks_step))
+    col.hist(ax = ax, figsize = figsize, bins = bins, color="teal")
+    plt.close()
+    return fig
+    
