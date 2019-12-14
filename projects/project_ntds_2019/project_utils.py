@@ -1,6 +1,6 @@
-import json
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import json
 import timeit
 
@@ -27,12 +27,14 @@ def get_intersections_length_adj_mat(col):
     "Get the intersecction length of the set of each entry with the set of every other entry in the column"
     start = timeit.default_timer()
     adj = np.zeros((col.shape[0], col.shape[0]))
-    for (i, set_row) in enumerate(col):
-        for (j, set_col) in enumerate(col):
+    for (i, set_row) in col.iteritems():
+        for (j, set_col) in col.iteritems():
             try:
                 adj[i, j] = len(set_row.intersection(set_col))
             except AttributeError:
                 adj[i, j] = 0
+    adj_diag = np.diag(np.diag(adj))
+    adj = adj - adj_diag
     stop = timeit.default_timer()
     print("Time: ", stop - start)
     return adj
@@ -101,4 +103,17 @@ def plot_hist(col,title,xlabel,ylabel,log = False, figsize = (10,5), xticks_step
     col.hist(ax = ax, figsize = figsize, bins = bins, color="teal")
     plt.close()
     return fig
-    
+
+def normalize_vote_rating(
+    vote_rating_col,
+    vote_count_col,
+    names=["vote_average", "vote_count"],
+):
+    "Normalize vote rating using vote count according to IMDbs formula"
+    c = vote_rating_col.mean()
+    m = vote_count_col.min()
+    vote_df = pd.concat([vote_rating_col, vote_count_col], axis=1, names=names)
+    normalize_vote_rating = (
+        lambda row: (row[names[1]] / (row[names[1]] + m)) * row[names[0]] + (m / (row[names[1]] + m)) * c
+    )
+    return vote_df.apply(normalize_vote_rating,axis=1)
