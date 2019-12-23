@@ -5,16 +5,13 @@
 [binder]: https://mybinder.org/v2/gh/mdeff/ntds_2019/outputs?urlpath=lab
 
 This repository contains the material for the practical work associated with the EPFL master course [EE-558 A Network Tour of Data Science][epfl] ([moodle]), taught in fall 2019.
-The content is similar to the [2017] and [2018] editions, with more emphasis on machine learning with graphs.
-Compared to the [2016 edition], the course has been refocused on graph and network sciences.
-The course is divided in two parts: Network Science and Learning with Graphs.
+The course is divided in two parts: **Network Science** and **Learning with Graphs**.
 The material revolves around the following topics:
-
-1. [Network Science](https://en.wikipedia.org/wiki/Network_science),
-1. [Spectral Graph Theory](https://en.wikipedia.org/wiki/Spectral_graph_theory),
-1. [Graph Signal Processing](https://arxiv.org/abs/1211.0053),
-1. [Data Science](https://en.wikipedia.org/wiki/Data_science),
-1. [Machine Learning](https://en.wikipedia.org/wiki/Machine_learning).
+[Network Science](https://en.wikipedia.org/wiki/Network_science),
+[Spectral Graph Theory](https://en.wikipedia.org/wiki/Spectral_graph_theory),
+[Graph Signal Processing](https://arxiv.org/abs/1211.0053),
+[Data Science](https://en.wikipedia.org/wiki/Data_science),
+[Machine Learning](https://en.wikipedia.org/wiki/Machine_learning).
 
 Theoretical knowledge is taught during lectures.
 Practical knowledge is taught through [tutorials](#tutorials).
@@ -24,6 +21,9 @@ Below are slides about the organization of the course.
 1. [Course organization][practical_info]
 1. [Projects][projects]
 1. Concluding remarks
+
+The content is similar to the [2017] and [2018] editions, with more emphasis on machine learning with graphs.
+Compared to the [2016 edition], the course has been refocused on graph and network sciences.
 
 [epfl]: https://edu.epfl.ch/coursebook/en/a-network-tour-of-data-science-EE-558
 [moodle]: https://moodle.epfl.ch/course/view.php?id=15299
@@ -44,17 +44,16 @@ Below is the teaching material you'll find in this repository (tentative).
 1. [Building graphs from features][t03]
 1. [Manipulating graphs with NetworkX][t04]
 1. [Machine learning with scikit-learn][t05]
-1. Learning on graphs with pytorch
-1. Sparse matrices with scipy
-1. Linear algebra for graphs and networkx
-1. Graph signal processing with pygsp
-1. Interactive graph visualization with gephi
+1. [Interactive graph visualization with gephi][t06]
+1. [Graph signal processing with pygsp][t07]
 
 [t01]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/tutorials/01_introduction.ipynb
 [t02]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/tutorials/02_graph_from_edge_list.ipynb
 [t03]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/tutorials/03_graph_from_features.ipynb
 [t04]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/tutorials/04_networkx.ipynb
 [t05]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/tutorials/05_scikit_learn.ipynb
+[t06]: tutorials/06_visualization
+[t07]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/tutorials/07_pygsp.ipynb
 
 For this course, you'll use the following tools:
 [conda] & [anaconda], [python], [jupyter], [git], [numpy], [scipy], [matplotlib], [pandas], [networkx], [graph-tool], [pygsp], [gephi], [scikit-learn], [pytorch].
@@ -81,11 +80,13 @@ The following assignments were designed to evaluate the theoretical understandin
 As a Data Science course, those activities are realized on real data and networks.
 
 1. Network science: [assignment][a1q], [solution][a1s].
-1. Learning with graphs: [assignment][a2q], solution, feedback.
+1. Learning with graphs: [assignment][a2q], [solution][a2s], [feedback][a2f].
 
 [a1q]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/assignments/1_network_science.ipynb
 [a1s]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/assignments/1_network_science_solution.ipynb
 [a2q]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/assignments/2_learning_with_graphs.ipynb
+[a2s]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/assignments/2_learning_with_graphs_solution.ipynb
+[a2f]: https://nbviewer.jupyter.org/github/mdeff/ntds_2019/blob/outputs/assignments/2_learning_with_graphs_feedback.ipynb
 
 ## Projects
 
@@ -149,7 +150,7 @@ Every time you want to work, do the following:
 
 ## Team
 
-* Instructors:
+* Lecturers:
 [Pierre Vandergheynst](https://people.epfl.ch/pierre.vandergheynst),
 [Pascal Frossard](https://people.epfl.ch/pascal.frossard),
 [Andreas Loukas](https://andreasloukas.blog),
