@@ -117,3 +117,26 @@ def normalize_vote_rating(
         lambda row: (row[names[1]] / (row[names[1]] + m)) * row[names[0]] + (m / (row[names[1]] + m)) * c
     )
     return vote_df.apply(normalize_vote_rating,axis=1)
+
+def fit_polynomial(lam: np.ndarray, order: int, spectral_response: np.ndarray):
+    """ Return an array of polynomial coefficients of length 'order'."""
+    A = np.vander(lam, order, increasing=True)
+    coeff = np.linalg.lstsq(A, spectral_response, rcond=None)[0]
+    return coeff
+
+def polynomial_graph_filter_response(coeff: np.array, lam: np.ndarray):
+    """ Return an array of the same shape as lam.
+        response[i] is the spectral response at frequency lam[i]. """
+    response = np.zeros_like(lam)
+    for n, c in enumerate(coeff):
+        response += c * (lam**n)
+    return response
+
+def polynomial_graph_filter(coeff: np.array, laplacian: np.ndarray):
+    """ Return the laplacian polynomial with coefficients 'coeff'. """
+    power = np.eye(laplacian.shape[0])
+    filt = coeff[0] * power
+    for n, c in enumerate(coeff[1:]):
+        power = laplacian @ power
+        filt += c * power
+    return filt
