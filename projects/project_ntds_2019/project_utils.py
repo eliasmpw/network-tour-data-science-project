@@ -140,3 +140,67 @@ def polynomial_graph_filter(coeff: np.array, laplacian: np.ndarray):
         power = laplacian @ power
         filt += c * power
     return filt
+
+def remove_elements_from_list(l,elements):
+    elements_set = set(elements)
+    mod_l = set(l)
+    mod_l = list(mod_l - elements_set)
+    return mod_l
+
+def get_train_feats_and_gt(df,gt_col,remove_cols = None):
+    """Get the train features and groundtruth col
+        
+        Args:
+            df(pandas.DataFrame):
+            gt_col(str)         :
+            remove_cols(list)   :
+        Returns:
+            A numpy.ndarray containing the features
+            A numpy.ndarray containing the labels
+    """
+    df_cols = list(df.columns)
+    if remove_cols:
+        feat_cols = remove_elements_from_list(df_cols,remove_cols + [gt_col])
+    else:
+        feat_cols = remove_elements_from_list(df_cols,[gt_col])
+    X = df[feat_cols].values
+    y = df[gt_col].values
+    return X, y
+
+def nmae(y_gt,y_pred,den_type="iqr"):
+    """Calculate the normalized mean-absolute error
+        
+        Can be normalized by 3 quantities calculated on the groundtruth:
+        - iqr: 'Interquartile range'
+        - range: 'Max-min range'
+        - std: 'Standard deviation'
+        
+        Args:
+            y_gt(numpy.ndarray)    :  the groundtruth values
+            y_pred(numpy.ndarray)  :  the predicted values
+            den_type(str)          :  the type of denominator           
+        Returns:
+            A float that is the value of the nmae
+    """
+    if den_type == "iqr":
+        den = iqr(y_gt)
+    elif den_type == "range":
+        den = np.max(y_gt) - np.min(y_gt)
+    elif den_type == "std":
+        den = np.std(y_gt)
+    else:
+        raise ValueError("Normalized MAE can only handle iqr, range and std")
+    return mean_absolute_error(y_gt,y_pred)/iqr(y_gt)
+
+def one_hot_encode_feats(X,cols):
+    """One hot encode feature
+        Args:
+            X(numpy.ndarray)                           :   the features
+            cols(list)                                 :   list of column numbers of the features to be one-hot encoded
+        Returns:
+            A numpy.ndarray containing the encoded features
+            A OneHotEncoder object       
+    """
+    enc = OneHotEncoder(handle_unknown="ignore",categorical_features=cols)
+    encoded_feats = enc.fit_transform(X)
+    return encoded_feats,enc
