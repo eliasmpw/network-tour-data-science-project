@@ -5,26 +5,54 @@ import json
 import timeit
 
 def col_json_to_dict(df, cols):
-    "Transform the json values inside a column into list of dictionaries"
+    """Transform the json values inside a column into list of dictionaries
+        Args:
+            df(pd.Dataframe): dataframe 
+            cols(list): name of columns with json values
+        Returns:
+            A pandas Dataframe with the json columns transformed
+    """
     transformed_df = df
     for col in cols:
         transformed_df = transformed_df.assign(**{col: df[col].apply(json.loads)})
     return transformed_df
 
 def col_dict_to_set(df, col, key):
-    "Create a set from the values of the dictionaries give a key"
+    """Create a set from the values of the dictionaries given a key
+        Args:
+            df(pd.Dataframe): dataframe
+            col(str): column containing list of dictionaries
+            key(str): key to extract from the dictionaries
+        Returns:
+            A pandas Dataframe with the list of dictionaries
+            transformed into sets 
+    """
     get_set = lambda dict_list: set([dict_.get(key) for dict_ in dict_list])
     return df.assign(**{col: df[col].apply(get_set)})
 
 def col_filter_dict_with_vals(df, col, field, values):
-    "Filter dictionaries with specific values from a column with lists of dictionaries"
+    """Filter dictionaries with specific values from a column with lists of dictionaries
+         Args:
+             df(pd.Dataframe): dataframe
+             col(str): column name
+             field(str): field of the dictionary extract
+             values(list): list of values to filter
+         Returns:
+             A pandas Dataframe with entries filtered 
+         
+    """
     filter_dicts = lambda dict_list: [
         dict_ for dict_ in dict_list if dict_.get(field) in values
     ]
     return df.assign(**{col: df[col].apply(filter_dicts)})
 
 def get_intersections_length_adj_mat(col):
-    "Get the intersecction length of the set of each entry with the set of every other entry in the column"
+    """Get the intersecction length of the set of each entry with the set of every other entry in the column
+        Args:
+            col(column): column name 
+        Returns:
+            A ndarray containing the length of the intersections sets
+    """
     start = timeit.default_timer()
     adj = np.zeros((col.shape[0], col.shape[0]))
     for (i, set_row) in col.iteritems():
@@ -40,7 +68,13 @@ def get_intersections_length_adj_mat(col):
     return adj
 
 def get_unions_length_adj_mat(col):
-    "Get the unions length of the set of each entry with the set of every other entry in the column"
+    """Get the unions length of the set of each entry with the set of every other entry in the column
+        Args:
+            col(str): the name of the column
+        Returns:
+            A ndarray containing the lengths of the union sets
+    
+    """
     start = timeit.default_timer()
     adj = np.zeros((col.shape[0], col.shape[0]))
     for (i, set_row) in enumerate(col):
@@ -54,7 +88,13 @@ def get_unions_length_adj_mat(col):
     return adj
 
 def get_json_keys_from_col(col):
-    "Get keys from all json strings within a column"
+    """Get keys from all json strings within a column
+        Args:
+            col(str): column name
+        Returns:
+            A list of keys from the dictionaries
+            A list of indexes for which the element is not a dictionary
+    """
     fields = set()
     col = col.apply(json.loads)
     col = col.dropna()
@@ -69,7 +109,14 @@ def get_json_keys_from_col(col):
     return list(fields), not_dict_idx
 
 def get_json_values_from_col(col, field):
-    "Get values from all json strings within a column"
+    """Get values from all json strings within a column
+        Args: 
+            col(str): column name
+            field(str): field from dictionary
+        Returns:
+            A list of json field values from column
+            Index that does not contain a value
+    """
     field_values = set()
     col = col.apply(json.loads)
     col = col.dropna()
@@ -84,15 +131,39 @@ def get_json_values_from_col(col, field):
     return list(field_values), not_val_idx
 
 def sparsify_mat(mat,epsilon):
-    "Set the values below a threshold to 0"
+    """Set the values below a threshold to 0
+        Args:
+            mat(numpy.ndarray): matrix to sparsify
+            epsilon(float): threshold for sparsification
+        Returns:
+            A sparsified matrix
+    """
     return np.where(mat<=epsilon,0,mat)
 
 def log10_transform(epsilon):
-    "Return a lambda function to perform a log transform"
+    """Return a lambda function to perform a log transform
+        Args:
+            epsilon(float): value to add to avoid log10(0)
+        Returns:
+            An anonymous function to calculate the log10
+    """
     return lambda x: np.log10(x+epsilon)
 
 def plot_hist(col,title,xlabel,ylabel,log = False, figsize = (10,5), xticks_step = 1.0 , bins = 200, epsilon = 1e-6):
-    "Plot a histogram of the column values"
+    """Plot a histogram of the column values
+        Args:
+            col(str): column name
+            title(str): title of the plot
+            xlabel(str): label of x axis
+            ylabel(str): label of y axis
+            log(bool): apply a logscale on x axis
+            figsize(tuple): figure size
+            xticks_step: step between xticks
+            bins: number of bins for the histogram
+            epsilon: value to add to avoid log10(0)
+        Returns:
+            A figure 
+    """
     if log:
         col = col.apply(log10_transform(epsilon)) 
     fig, ax = plt.subplots()
@@ -109,7 +180,14 @@ def normalize_vote_rating(
     vote_count_col,
     names=["vote_average", "vote_count"],
 ):
-    "Normalize vote rating using vote count according to IMDbs formula"
+    """Normalize vote rating using vote count according to IMDbs formula
+        Args: 
+            vote_rating_col(str): column containing the vote rating
+            vote_count_col(str): column containing the vote count
+            names(str): list of column names names to assign in the dataframe
+        Returns:
+            A dataframe with the normalized vote rating
+    """
     c = vote_rating_col.mean()
     m = vote_count_col.min()
     vote_df = pd.concat([vote_rating_col, vote_count_col], axis=1, names=names)
@@ -119,7 +197,7 @@ def normalize_vote_rating(
     return vote_df.apply(normalize_vote_rating,axis=1)
 
 def fit_polynomial(lam: np.ndarray, order: int, spectral_response: np.ndarray):
-    """ Return an array of polynomial coefficients of length 'order'."""
+    """Return an array of polynomial coefficients of length 'order'."""
     A = np.vander(lam, order, increasing=True)
     coeff = np.linalg.lstsq(A, spectral_response, rcond=None)[0]
     return coeff
@@ -190,7 +268,7 @@ def nmae(y_gt,y_pred,den_type="iqr"):
         den = np.std(y_gt)
     else:
         raise ValueError("Normalized MAE can only handle iqr, range and std")
-    return mean_absolute_error(y_gt,y_pred)/iqr(y_gt)
+    return mean_absolute_error(y_gt,y_pred)/den
 
 def one_hot_encode_feats(X,cols):
     """One hot encode feature
