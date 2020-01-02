@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import networkx as nx
 import json
 import timeit
 
@@ -204,3 +205,14 @@ def one_hot_encode_feats(X,cols):
     enc = OneHotEncoder(handle_unknown="ignore",categorical_features=cols)
     encoded_feats = enc.fit_transform(X)
     return encoded_feats,enc
+
+def attrs_to_graph(g, df):
+    """ Adds attributes from dataframe `df` to graph `g` """
+    for column in df.columns:
+        nx.set_node_attributes(g, df[column].to_dict(), column)
+        
+def gefx_compatible(x):
+    """ Transforms `x` into a gefx compatible variable """
+    if isinstance(x, list):
+        return ", ".join(list(map(lambda y: str(y), x)))
+    return ", ".join(list(map(lambda y: str(y), list(x))))
