@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import json
 import timeit
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 def col_json_to_dict(df, cols):
     """Transform the json values inside a column into list of dictionaries
