@@ -4,7 +4,10 @@ import pandas as pd
 import networkx as nx
 import json
 import timeit
+from sklearn.metrics import mean_absolute_error
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.model_selection import train_test_split
 
 def col_json_to_dict(df, cols):
     """Transform the json values inside a column into list of dictionaries
@@ -37,7 +40,7 @@ def col_filter_dict_with_vals(df, col, field, values):
          Args:
              df(pd.Dataframe): dataframe
              col(str): column name
-             field(str): field of the dictionary extract
+             field(str): field of the dictionary to extract
              values(list): list of values to filter
          Returns:
              A pandas Dataframe with entries filtered 
@@ -49,7 +52,7 @@ def col_filter_dict_with_vals(df, col, field, values):
     return df.assign(**{col: df[col].apply(filter_dicts)})
 
 def get_intersections_length_adj_mat(col):
-    """Get the intersecction length of the set of each entry with the set of every other entry in the column
+    """Get the intersection length of the set of each entry with the set of every other entry in the column
         Args:
             col(column): column name 
         Returns:
@@ -75,7 +78,6 @@ def get_unions_length_adj_mat(col):
             col(str): the name of the column
         Returns:
             A ndarray containing the lengths of the union sets
-    
     """
     start = timeit.default_timer()
     adj = np.zeros((col.shape[0], col.shape[0]))
@@ -199,7 +201,14 @@ def normalize_vote_rating(
     return vote_df.apply(normalize_vote_rating,axis=1)
 
 def fit_polynomial(lam: np.ndarray, order: int, spectral_response: np.ndarray):
-    """Return an array of polynomial coefficients of length 'order'."""
+    """Return an array of polynomial coefficients of length 'order'.
+        Args:
+            lam(np.ndarray): lambda
+            order(int): order of the polynomial
+            spectral_response(np.ndarray): spectral_response
+        Returns:
+            coeff(np.ndarray):
+    """
     A = np.vander(lam, order, increasing=True)
     coeff = np.linalg.lstsq(A, spectral_response, rcond=None)[0]
     return coeff
@@ -227,6 +236,14 @@ def remove_elements_from_list(l,elements):
     mod_l = list(mod_l - elements_set)
     return mod_l
 
+def get_linear_reg_results(X,y,test_size,seed):
+    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=test_size,random_state=seed)
+    lr = LinearRegression()
+    fit_lr =lr.fit(X_train,y_train)
+    y_pred = fit_lr.predict(X_test)
+    signal_nmae = nmae(y_test,y_pred,"range")
+    return y_pred, signal_nmae, fit_lr
+
 def get_train_feats_and_gt(df,gt_col,remove_cols = None):
     """Get the train features and groundtruth col
         
@@ -246,6 +263,21 @@ def get_train_feats_and_gt(df,gt_col,remove_cols = None):
     X = df[feat_cols].values
     y = df[gt_col].values
     return X, y
+
+def get_datasets(df,columns):
+    cols_2_remove = ["community"]
+    Xs = {}
+    Xs_com = {}
+    ys = {}
+    ys_com = {}
+    for col in columns:
+        X, y = get_train_feats_and_gt(df,col,cols_2_remove)
+        X_com, y_com = get_train_feats_and_gt(df,col)
+        Xs[col]=X
+        Xs_com[col] = X_com
+        ys[col] = y
+        ys_com[col] = y_com
+    return Xs, Xs_com, ys, ys_com
 
 def nmae(y_gt,y_pred,den_type="iqr"):
     """Calculate the normalized mean-absolute error
