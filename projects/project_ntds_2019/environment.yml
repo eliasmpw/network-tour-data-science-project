@@ -1,5 +1,8 @@
-name: ntds_2019
+name: ntds_2019_project
 channels:
+  - dglteam
+  - pytorch
+  - conda-forge
   - defaults
 dependencies:
   - numpy=1.15.4
