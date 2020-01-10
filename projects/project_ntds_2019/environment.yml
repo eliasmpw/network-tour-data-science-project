@@ -1,4 +1,4 @@
-name: ntds_2019
+name: ntds_2019_project
 channels:
   - dglteam
   - pytorch
